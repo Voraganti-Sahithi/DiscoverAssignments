@@ -3,11 +3,11 @@ package com.example.demoApp1.mapperclass;
 import org.mapstruct.Mapper;
 
 import com.example.demoApp1.dto.EmployeeDTO;
-import com.example.demoApp1.vo.Employee;
+import com.example.demoApp1.vo.EmployeeVO;
 
 @Mapper(componentModel = "spring")
 public interface EmployeeMapper {
 	
-	    EmployeeDTO employeeToEmployeeDTO(Employee employee);
-	    Employee employeeDTOToEmployee(EmployeeDTO employeeDTO);
+	    EmployeeDTO employeeToEmployeeDTO(EmployeeVO employee);
+	    EmployeeVO employeeDTOToEmployee(EmployeeDTO employeeDTO);
 }

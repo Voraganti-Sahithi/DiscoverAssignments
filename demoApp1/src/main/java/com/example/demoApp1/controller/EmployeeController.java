@@ -20,18 +20,19 @@ import com.example.demoApp1.exceptions.EmployeeNotFoundException;
 import com.example.demoApp1.exceptions.EmployeeValidationException;
 import com.example.demoApp1.service.EmployeeService;
 import com.example.demoApp1.util.Constants;
-import com.example.demoApp1.vo.Employee;
+import com.example.demoApp1.vo.EmployeeVO;
 
 @RestController
 @RequestMapping(Constants.EMPLOYEE_API)
 public class EmployeeController {
+	
 	@Autowired
     private EmployeeService employeeService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createEmployee(@Validated @RequestBody EmployeeDTO employeeDTO) {
         try {
-            EmployeeDTO createdEmployee = employeeService.createEmployee(employeeDTO);
+            EmployeeVO createdEmployee = employeeService.createEmployee(employeeDTO);
             return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
         } catch (EmployeeValidationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
@@ -41,15 +42,15 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<EmployeeDTO>> getAllEmployees() {
-        List<EmployeeDTO> employees = employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeVO>> getAllEmployees() {
+        List<EmployeeVO> employees = employeeService.getAllEmployees();
         return new ResponseEntity<>(employees, HttpStatus.OK);
-    }
+    } 
 
     @GetMapping("/byId/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id) {
         try {
-            EmployeeDTO employee = employeeService.getEmployeeById(id);
+            EmployeeVO employee = employeeService.getEmployeeById(id);
             return new ResponseEntity<>(employee, HttpStatus.OK);
         } catch (EmployeeNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -61,7 +62,7 @@ public class EmployeeController {
     @GetMapping("/byName/{name}")
     public ResponseEntity<?> getEmployeeByName(@PathVariable("name") String name) {
         try {
-            List<EmployeeDTO> employees = employeeService.getEmployeeByName(name);
+            List<EmployeeVO> employees = employeeService.getEmployeeByName(name);
             return new ResponseEntity<>(employees, HttpStatus.OK);
         } catch (EmployeeNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -69,25 +70,42 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
         }
     }
-    @GetMapping("/healthCheckById")
+    @GetMapping("/healthCheck")
     public ResponseEntity<String> healthCheckId() {
 	    try {
-	    	EmployeeDTO employee = employeeService.getEmployeeById(100L);
-	    	Optional<EmployeeDTO> optionalEmployee = Optional.ofNullable(employee); // Example: Check for user with ID 1
-	        if (optionalEmployee.isPresent()) {
-	            return ResponseEntity.ok("Success health check");
-	        } else {
-	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed health check");
-	        }
-	    } catch (EmployeeNotFoundException e) {
-	    	 return ResponseEntity.ok("Success health check");
-	    }
+            // Hardcoded input value
+            String input = "abc"; // Change this to test other cases, e.g., "abc"
+
+            // Validate if the input is a valid Long
+            Long employeeId;
+            try {
+                employeeId = Long.parseLong(input);
+            } catch (NumberFormatException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Health check failed: Input is not a valid numeric ID");
+            }
+
+            // Fetch employee by ID
+            EmployeeVO employee = employeeService.getEmployeeById(employeeId);
+	    	Optional<EmployeeVO> optionalEmployee = Optional.ofNullable(employee);
+            if (optionalEmployee.isPresent()) {
+                return ResponseEntity.ok("Success health check");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Failed health check: Employee not found");
+            }
+        } catch (EmployeeNotFoundException e) {
+            return ResponseEntity.ok("Health check Success, but Employee not found");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Health check failed: An unexpected error occurred");
+        }
 	}
-    @GetMapping("/healthCheck")
+    @GetMapping("/healthChecks")
     public ResponseEntity<?> healthCheck(){
     	 
         try {
-            // Try to fetch some data from the H2 database as a simple check
+      
             long empCount = employeeService.getAllEmployees().size();
             return new ResponseEntity<>("Backend is healthy. Total employees: " + empCount, HttpStatus.OK);
         } catch (Exception e) {
