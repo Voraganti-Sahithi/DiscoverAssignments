@@ -99,15 +99,4 @@ public class EmployeeController {
                     .body("Health check failed: An unexpected error occurred");
         }
 	}
-    @GetMapping("/healthChecks")
-    public ResponseEntity<?> healthCheck(){
-    	 
-        try {
-      
-            long empCount = employeeService.getAllEmployees().size();
-            return new ResponseEntity<>("Backend is healthy. Total employees: " + empCount, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Backend is not healthy", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }
