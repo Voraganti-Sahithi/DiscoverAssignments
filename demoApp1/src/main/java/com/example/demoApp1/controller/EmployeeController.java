@@ -69,4 +69,29 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
         }
     }
+    @GetMapping("/healthCheckById")
+    public ResponseEntity<String> healthCheckId() {
+	    try {
+	    	EmployeeDTO employee = employeeService.getEmployeeById(100L);
+	    	Optional<EmployeeDTO> optionalEmployee = Optional.ofNullable(employee); // Example: Check for user with ID 1
+	        if (optionalEmployee.isPresent()) {
+	            return ResponseEntity.ok("Success health check");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed health check");
+	        }
+	    } catch (EmployeeNotFoundException e) {
+	    	 return ResponseEntity.ok("Success health check");
+	    }
+	}
+    @GetMapping("/healthCheck")
+    public ResponseEntity<?> healthCheck(){
+    	 
+        try {
+            // Try to fetch some data from the H2 database as a simple check
+            long empCount = employeeService.getAllEmployees().size();
+            return new ResponseEntity<>("Backend is healthy. Total employees: " + empCount, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Backend is not healthy", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
