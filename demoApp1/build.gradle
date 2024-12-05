@@ -33,9 +33,16 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	implementation 'org.mapstruct:mapstruct:1.5.3.Final' // MapStruct library
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final' // MapStruct annotation processor
-	
+	implementation 'org.mapstruct:mapstruct:1.5.3.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.3.Final'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    
+    // Mockito Core for mocking objects
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+
+    // Mockito with JUnit 5 support
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {

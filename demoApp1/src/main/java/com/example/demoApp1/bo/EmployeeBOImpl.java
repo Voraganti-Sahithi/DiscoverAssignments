@@ -58,8 +58,6 @@ public class EmployeeBOImpl implements EmployeeBO{
 	    	logger.error("Validation Failed : Name must be between 2 and 50 characters.");
 	        throw new EmployeeValidationException("Name must be between 2 and 50 characters.");
 	    }
-
-	    // Validate Age
 	    if (employee.getAge() < 18 || employee.getAge() > 65) {
 	    	logger.error("Validation Failed : Age must be between 18 and 65.");
 	        throw new EmployeeValidationException("Age must be between 18 and 65.");
