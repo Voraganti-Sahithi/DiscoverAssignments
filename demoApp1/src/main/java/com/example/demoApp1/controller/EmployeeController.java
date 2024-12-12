@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,33 +20,34 @@ import com.example.demoApp1.dto.EmployeeDTO;
 import com.example.demoApp1.exceptions.EmployeeNotFoundException;
 import com.example.demoApp1.exceptions.EmployeeValidationException;
 import com.example.demoApp1.service.EmployeeService;
-import com.example.demoApp1.serviceImpl.EmployeeServiceImpl;
-import com.example.demoApp1.util.Constants;
 import com.example.demoApp1.vo.EmployeeVO;
 
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 	
 	@Autowired
     private EmployeeService employeeService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createEmployee(@Validated @RequestBody EmployeeDTO employeeDTO) {
-    	logger.info("Creating a new employee with details: {}", employeeDTO);
+    public ResponseEntity<?> createEmployee(@RequestBody EmployeeVO employeeVO){
+    	logger.info("Creating a new employee with details: {}", employeeVO);
         try {
-            EmployeeVO createdEmployee = employeeService.createEmployee(employeeDTO);
+            EmployeeVO createdEmployee = employeeService.createEmployee(employeeVO);
             logger.info("Employee successfully created with ID: {}", createdEmployee.getId());
             return new ResponseEntity<>(createdEmployee, HttpStatus.CREATED);
         } catch (EmployeeValidationException e) {
         	logger.error("Validation Failed : Name must be from 2 to 50 characters and  Age must be between 18 and 65 ");
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return new ResponseEntity<>("Validation Failed : Name must be from 2 to 50 characters and Age must be between 18 and 65", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
         }
     }
+	
+	
+	
 
     @GetMapping("/all")
     public ResponseEntity<List<EmployeeVO>> getAllEmployees() {
@@ -58,7 +60,6 @@ public class EmployeeController {
         logger.info("Successfully retrieved {} employees.", employees.size());
         return new ResponseEntity<>(employees, HttpStatus.OK);
     } 
-
     @GetMapping("/byId/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id) {
     	logger.info("Fetching employee with ID: {}", id);
@@ -85,22 +86,18 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
         }
     }
-    @GetMapping("/healthCheck")
-    public ResponseEntity<String> healthCheckId() {
+    
+    @GetMapping("/healthCheck/{value}")
+    public ResponseEntity<String> healthCheckId(@PathVariable("value") String value) {
 	    try {
-            // Hardcoded input value
-            String input = "abc"; // Change this to test other cases, e.g., "abc"
-
-            // Validate if the input is a valid Long
+            //String input = "abc"; // Change this to test other cases, e.g., "abc"
             Long employeeId;
             try {
-                employeeId = Long.parseLong(input);
+                employeeId = Long.parseLong(value);
             } catch (NumberFormatException e) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                         .body("Health check failed: Input is not a valid numeric ID");
             }
-
-            // Fetch employee by ID
             EmployeeVO employee = employeeService.getEmployeeById(employeeId);
 	    	Optional<EmployeeVO> optionalEmployee = Optional.ofNullable(employee);
             if (optionalEmployee.isPresent()) {
@@ -110,10 +107,19 @@ public class EmployeeController {
                         .body("Failed health check: Employee not found");
             }
         } catch (EmployeeNotFoundException e) {
-            return ResponseEntity.ok("Health check Success, but Employee not found");
+        	return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Health check success: Employee not found");
+//            return ResponseEntity.ok("Health check Success, but Employee not found");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Health check failed: An unexpected error occurred");
         }
 	}
+    
+    public ResponseEntity<?> fallbackCreateEmployeeController(EmployeeVO employeeVO, Throwable throwable) {
+        // You can log the error and return a custom fallback response
+        logger.error("Circuit breaker triggered: {}", throwable.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Service is currently unavailable. Please try again later.");
+    }
 }

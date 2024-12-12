@@ -1,20 +1,23 @@
 package com.example.demoApp1.bo;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import com.example.demoApp1.dao.EmployeeRepository;
+import com.example.demoApp1.dto.EmployeeDTO;
 import com.example.demoApp1.exceptions.EmployeeNotFoundException;
 import com.example.demoApp1.exceptions.EmployeeValidationException;
 import com.example.demoApp1.mapperclass.EmployeeMapper;
-import com.example.demoApp1.serviceImpl.EmployeeServiceImpl;
 import com.example.demoApp1.vo.EmployeeVO;
 
-@Service
+@Component
 public class EmployeeBOImpl implements EmployeeBO{
-	private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+	
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeBOImpl.class);
 	@Autowired
 	private EmployeeRepository employeeRepo;
 	
@@ -23,18 +26,24 @@ public class EmployeeBOImpl implements EmployeeBO{
 	
 
 	@Override
-	public List<EmployeeVO> getAllEmployees(){
+	public List<EmployeeDTO> getAllEmployees(){
 		logger.info("Fetching all employees from the database.");
 		List<EmployeeVO> employees = employeeRepo.findAll();
-		if (employees.isEmpty()) {
+		List<EmployeeDTO> empRes = new ArrayList<>();
+		for(EmployeeVO emp: employees) {
+			EmployeeDTO result = employeeMapper.employeeToEmployeeDTO(emp);
+			empRes.add(result);
+		}
+		
+		if (empRes.isEmpty()) {
 			logger.warn("No employees found in the database.");
             throw new EmployeeNotFoundException("No employees found.");
         }
 		logger.info("Successfully retrieved {} employees.", employees.size());
-		return employees;
+		return empRes;
 	}
 
-	public EmployeeVO getEmployeeById(Long id) {
+	public EmployeeDTO getEmployeeById(Long id) {
 		logger.info("Fetching employee with ID: {}", id);
 		EmployeeVO employee = employeeRepo.findById(id)
 				.orElseThrow(() -> {
@@ -42,11 +51,12 @@ public class EmployeeBOImpl implements EmployeeBO{
 					return new EmployeeNotFoundException("Employee with ID " + id + " not found.");
 				});
 		 logger.info("Successfully retrieved employee: {}", employee);
-		return employee;
+		 EmployeeDTO result = employeeMapper.employeeToEmployeeDTO(employee);
+		return result;
 	}
 
 	@Override
-	public EmployeeVO createEmployee(EmployeeVO employee) {
+	public EmployeeDTO createEmployee(EmployeeDTO employee){
 		
 		logger.info("Creating a new employee with details: {}", employee);
 		
@@ -62,15 +72,17 @@ public class EmployeeBOImpl implements EmployeeBO{
 	    	logger.error("Validation Failed : Age must be between 18 and 65.");
 	        throw new EmployeeValidationException("Age must be between 18 and 65.");
 	    }
-		EmployeeVO savedEmployee = employeeRepo.save(employee);
+	    EmployeeVO employeeVO = employeeMapper.employeeDTOToEmployee(employee);
+		EmployeeVO savedEmployee = employeeRepo.save(employeeVO);
 		
 		logger.info("Employee successfully created with ID: {}", savedEmployee.getId());
-		return savedEmployee;
+		EmployeeDTO result = employeeMapper.employeeToEmployeeDTO(savedEmployee);
+		return result;
 		// TODO Auto-generated method stub
 	}
 
 	@Override
-	public List<EmployeeVO> getEmployeeByName(String name) {
+	public List<EmployeeDTO> getEmployeeByName(String name) {
 		// TODO Auto-generated method stub
 		logger.info("Fetching employees with name: {}", name);
 		List<EmployeeVO> employees = employeeRepo.findByName(name);
@@ -79,6 +91,11 @@ public class EmployeeBOImpl implements EmployeeBO{
 			throw new EmployeeNotFoundException("No employees found with name: " + name);
         }
 		logger.info("Successfully retrieved {} employees with name: {}", employees.size(), name);
-        return (List<EmployeeVO>)employees;
+		List<EmployeeDTO> result = new ArrayList<>();
+		for( EmployeeVO emp : employees) {
+			EmployeeDTO res = employeeMapper.employeeToEmployeeDTO(emp);
+			result.add(res);
+		}
+        return result;
 	}
 }

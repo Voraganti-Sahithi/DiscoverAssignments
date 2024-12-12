@@ -29,6 +29,19 @@ public class EmployeeVO {
     private Integer age;
 
     
+	
+	public EmployeeVO() {
+	}
+
+	public EmployeeVO(Long id,
+			@NotBlank(message = "Name is mandatory") @Size(min = 2, max = 50, message = "name must be between 2 and 50 characters") String name,
+			@NotNull(message = "Age is mandatory") @Min(value = 18, message = "Age must be at least 18") @Max(value = 65, message = "Age must be at most 65") Integer age) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.age = age;
+	}
+
 	public Long getId() {
 		return id;
 	}
