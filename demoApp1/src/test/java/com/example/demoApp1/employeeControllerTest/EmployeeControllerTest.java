@@ -165,7 +165,7 @@ public class EmployeeControllerTest {
 	    @Test
 	    public void testHealthCheck_InvalidEmployeeId() throws Exception {
 	    	
-	    	String invalidInput = "abc";  // Non-numeric input
+	    	String invalidInput = "abc";  
 	        
 	    	 
 	        mockMvc.perform(get("/api/employees/healthCheck/{value}", invalidInput))
@@ -179,11 +179,10 @@ public class EmployeeControllerTest {
 	        // Mock the service to return a user with ID 1
 	    	when(employeeService.getEmployeeById(1L)).thenReturn(employeeVO);
 	    	String invalidInput = "1";  
-	        // Perform the GET request to the health endpoint
 	        mockMvc.perform(get("/api/employees/healthCheck/{value}",invalidInput))
-	                .andDo(print())  // Print response for debugging
-	                .andExpect(status().isOk())  // Expect 200 OK for valid user
-	                .andExpect(content().string("Success health check"));  // Expected success message
+	                .andDo(print())
+	                .andExpect(status().isOk()) 
+	                .andExpect(content().string("Success health check"));
 	    }
 	    
 

@@ -1,0 +1,115 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8888
+  description: Generated server url
+paths:
+  /api/employees/create:
+    post:
+      tags:
+      - employee-controller
+      operationId: createEmployee
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployeeVO"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/employees/healthCheck/{value}:
+    get:
+      tags:
+      - employee-controller
+      operationId: healthCheckId
+      parameters:
+      - name: value
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /api/employees/byName/{name}:
+    get:
+      tags:
+      - employee-controller
+      operationId: getEmployeeByName
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/employees/byId/{id}:
+    get:
+      tags:
+      - employee-controller
+      operationId: getEmployeeById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+  /api/employees/all:
+    get:
+      tags:
+      - employee-controller
+      operationId: getAllEmployees
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeVO"
+components:
+  schemas:
+    EmployeeVO:
+      required:
+      - age
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          maxLength: 50
+          minLength: 2
+          type: string
+        age:
+          maximum: 65
+          minimum: 18
+          type: integer
+          format: int32

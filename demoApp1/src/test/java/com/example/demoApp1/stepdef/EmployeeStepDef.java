@@ -62,17 +62,17 @@ public class EmployeeStepDef {
     @Given("an employee exists with ID {long} and name {string} and age {int}")
     public void givenEmployeeExists(Long id, String name, int age) throws Exception {
         // Assuming you have some logic to create an employee or mock it
-        EmployeeVO employee = new EmployeeVO();
-        employee.setId(id);
-        employee.setName(name);
-        employee.setAge(age);
-
-        String url = BASE_URL + "/create";
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(employee), headers);
-
-        restTemplate.postForEntity(url, entity, String.class);
+//        EmployeeVO employee = new EmployeeVO();
+//        employee.setId(id);
+//        employee.setName(name);
+//        employee.setAge(age);
+//
+//        String url = BASE_URL + "/create";
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<String> entity = new HttpEntity<>(objectMapper.writeValueAsString(employee), headers);
+//
+//        restTemplate.postForEntity(url, entity, String.class);
     }
 
     @When("I fetch the employee by ID {long}")
@@ -107,13 +107,17 @@ public class EmployeeStepDef {
     
     @Then("I should see a list of employees with ID <id> and name {string} and age {int}")
     public void i_should_see_a_list_of_employees_with_id_id_and_name_and_age(String string, Integer int1) {
-    	// Check if the response is successful (status code 200)
-    	assertEquals(HttpStatus.OK, responseList.getStatusCode());
+        assertEquals(HttpStatus.OK, responseList.getStatusCode());
 
         List<EmployeeVO> employees = responseList.getBody();
-        boolean employeeFound = employees.stream()
-            .anyMatch(emp -> emp.getName().equals(string) && emp.getAge() == int1);
-
+        boolean employeeFound = false;
+        for (EmployeeVO emp : employees) {
+            if (emp.getName().equals(string) && emp.getAge() == int1) {
+                employeeFound = true;
+                break;
+            }
+        }
+        // Assert that the employee was found
         assertTrue("Employee not found in the list", employeeFound);
     }
 }

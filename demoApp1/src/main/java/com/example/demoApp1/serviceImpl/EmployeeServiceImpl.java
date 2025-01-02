@@ -1,4 +1,4 @@
-package com.example.demoApp1.service;
+package com.example.demoApp1.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import com.example.demoApp1.bo.EmployeeBO;
 import com.example.demoApp1.dto.EmployeeDTO;
 import com.example.demoApp1.mapperclass.EmployeeMapper;
+import com.example.demoApp1.service.EmployeeService;
 import com.example.demoApp1.vo.EmployeeVO;
 
 @Service
@@ -61,5 +62,13 @@ public class EmployeeServiceImpl implements EmployeeService{
 			result.add(res);
 		}
 		return result;
+	}
+
+	@Override
+	public EmployeeVO getEmployeeByIdAndName(Long id, String name) {
+		// TODO Auto-generated method stub
+		EmployeeDTO emp = employeeBo.getEmployeeByIdAndName(id, name);
+		EmployeeVO employee = employeeMapper.employeeDTOToEmployee(emp);
+		return employee;
 	}
 }

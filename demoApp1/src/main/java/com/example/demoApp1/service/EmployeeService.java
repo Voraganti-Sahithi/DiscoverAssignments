@@ -18,4 +18,5 @@ public interface EmployeeService {
 	 List<EmployeeVO> getAllEmployees();
 	 EmployeeVO getEmployeeById(Long id);
 	 List<EmployeeVO> getEmployeeByName(String name);
+	 EmployeeVO getEmployeeByIdAndName(Long id, String name);
 }

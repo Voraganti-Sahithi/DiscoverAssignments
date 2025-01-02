@@ -15,5 +15,6 @@ public interface EmployeeBO {
 	List<EmployeeDTO> getAllEmployees();
 	EmployeeDTO getEmployeeById(Long id);
 	List<EmployeeDTO> getEmployeeByName(String name);
+	EmployeeDTO getEmployeeByIdAndName(Long id, String name);
 
 }

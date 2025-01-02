@@ -22,16 +22,18 @@ import com.example.demoApp1.exceptions.EmployeeValidationException;
 import com.example.demoApp1.service.EmployeeService;
 import com.example.demoApp1.vo.EmployeeVO;
 
+
+
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
-	
+	 
 	@Autowired
     private EmployeeService employeeService;
 
-    @PostMapping("/create")
+	@PostMapping("/create")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeVO employeeVO){
     	logger.info("Creating a new employee with details: {}", employeeVO);
         try {
@@ -49,18 +51,22 @@ public class EmployeeController {
 	
 	
 
-    @GetMapping("/all")
+
+	@GetMapping("/all")
     public ResponseEntity<List<EmployeeVO>> getAllEmployees() {
     	logger.info("Fetching all employees from the database.");
         List<EmployeeVO> employees = employeeService.getAllEmployees();
         if (employees.isEmpty()) {
 			logger.warn("No employees found in the database.");
             throw new EmployeeNotFoundException("No employees found.");
+//			return new ResponseEntity<>(employees, HttpStatus.OK);
         }
         logger.info("Successfully retrieved {} employees.", employees.size());
         return new ResponseEntity<>(employees, HttpStatus.OK);
     } 
-    @GetMapping("/byId/{id}")
+	
+	
+	@GetMapping("/byId/{id}")
     public ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id) {
     	logger.info("Fetching employee with ID: {}", id);
         try {

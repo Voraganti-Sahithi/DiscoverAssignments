@@ -2,8 +2,6 @@ package com.example.demoApp1.employeeServiceTest;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -20,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.example.demoApp1.bo.EmployeeBO;
 import com.example.demoApp1.dto.EmployeeDTO;
 import com.example.demoApp1.mapperclass.EmployeeMapper;
-import com.example.demoApp1.service.EmployeeServiceImpl;
+import com.example.demoApp1.serviceImpl.EmployeeServiceImpl;
 import com.example.demoApp1.vo.EmployeeVO;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,9 +39,7 @@ public class EmployeeServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this); // Initializes the mocks
-
-        // Initialize EmployeeVO and EmployeeDTO objects
+        MockitoAnnotations.openMocks(this); 
         employeeVO = new EmployeeVO();
         	employeeVO.setId(1L);
         employeeVO.setName("sahithi");

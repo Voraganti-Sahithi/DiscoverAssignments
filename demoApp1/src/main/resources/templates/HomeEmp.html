@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Employee</title>
+<style>
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			height: 100vh;
+			padding: 20px;
+			color: white;
+		}
+		.button {
+			display: inline-block;
+			padding: 10px 20px;
+			margin: 8px;
+			background-color: #4CAF50;
+			color: #fff;
+			border: none;
+			border-radius: 20px;
+			text-align: center;
+			text-decoration: none;
+			cursor: pointer;
+			font-family: 'Arial';
+			font-size: 16px;
+		}
+		body {
+			font-family: 'Arial';
+			margin: 0;
+			padding: 0;
+			background-color: #333;
+		}
+		.endpoint {
+			margin-top: 20px;
+			text-align: center;
+		}
+		.button:hover {
+			background-color: #45a049;
+			transform: scale(1.05);
+		}
+		h1.title {
+			font-size: 40px;
+			font-family: 'Segoe UI';
+			color: orange;
+			margin-bottom: 30px;
+		}
+</style>
+</head>
+<body>
+<div class="container">
+<h1 class="title">Welcome to the Employee Homepage</h1> 
+
+<div th:if="${employee != null}">
+        <h2>Employee Details:</h3>
+        <p>Employee ID: <span th:text="${employee.id}"></span></p>
+        <p>Employee Name: <span th:text="${employee.name}"></span></p>
+        <p>Employee Age: <span th:text="${employee.age}"></span></p>
+    </div>
+
+    <div th:if="${error != null}">
+        <p th:text="${error}"></p>
+    </div>
+
+<div class="endpoint">
+<button onclick="window.location.href='http://localhost:8888/api/employees/createEmployee'" class="button">Register new Employee</button>
+<button onclick="window.location.href='http://localhost:8888/api/employees/allEmployee'" class="button">Fetch all Employees</button>
+<button onclick="window.location.href='http://localhost:8888/api/employees/employeeByIdForm'" class="button">Fetch Employee by ID</button>
+<button onclick="window.location.href='http://localhost:8888/api/employees/login'" class="button">Login Page</button>
+</div>
+
+</div>
+</body>
+</html>

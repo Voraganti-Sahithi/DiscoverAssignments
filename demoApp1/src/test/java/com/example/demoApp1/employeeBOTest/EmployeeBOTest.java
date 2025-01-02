@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -55,24 +56,28 @@ public class EmployeeBOTest {
         employeeDTO.setName("sahithi");
         employeeDTO.setAge(30);
     }
-
-    @Test
     void testGetAllEmployees_Success() {
-  
-        List<EmployeeVO> employeeList = List.of(employeeVO);
+        // Create the list manually without using List.of or Arrays.asList
+        List<EmployeeVO> employeeList = new ArrayList<>();
+        employeeList.add(employeeVO);
+
+        // Mock the repository method
         when(employeeRepo.findAll()).thenReturn(employeeList);
+        // Mock the mapper method
         when(employeeMapper.employeeToEmployeeDTO(employeeVO)).thenReturn(employeeDTO);
 
+        // Call the method under test
         List<EmployeeDTO> result = employeeBO.getAllEmployees();
 
+        // Assertions
         assertNotNull(result);
         assertEquals(1, result.size());
         assertEquals(employeeDTO, result.get(0));
 
+        // Verify interactions with mocks
         verify(employeeRepo, times(1)).findAll();
         verify(employeeMapper, times(1)).employeeToEmployeeDTO(employeeVO);
     }
-
 
     @Test
     void testGetAllEmployees_NoEmployees() {

@@ -2,7 +2,7 @@ package com.example.demoApp1.vo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JAXBConversions {
+public class JaksonConversions {
 
 	public String convertPojoToJson(EmployeeVO employeeVO) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -21,7 +21,7 @@ public class JAXBConversions {
 		employee.setName("sahithi");
 		employee.setAge(20);
 		
-		JAXBConversions obj = new JAXBConversions();
+		JaksonConversions obj = new JaksonConversions();
 		String json = obj.convertPojoToJson(employee);
 		System.out.println("Converting POJO to JSON : " + json);
 		

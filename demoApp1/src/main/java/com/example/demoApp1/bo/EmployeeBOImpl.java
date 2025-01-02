@@ -14,7 +14,7 @@ import com.example.demoApp1.exceptions.EmployeeValidationException;
 import com.example.demoApp1.mapperclass.EmployeeMapper;
 import com.example.demoApp1.vo.EmployeeVO;
 
-@Component
+@Service
 public class EmployeeBOImpl implements EmployeeBO{
 	
 	private static final Logger logger = LoggerFactory.getLogger(EmployeeBOImpl.class);
@@ -38,6 +38,7 @@ public class EmployeeBOImpl implements EmployeeBO{
 		if (empRes.isEmpty()) {
 			logger.warn("No employees found in the database.");
             throw new EmployeeNotFoundException("No employees found.");
+//			return new ArrayList<>();
         }
 		logger.info("Successfully retrieved {} employees.", employees.size());
 		return empRes;
@@ -98,4 +99,10 @@ public class EmployeeBOImpl implements EmployeeBO{
 		}
         return result;
 	}
+	
+	public EmployeeDTO getEmployeeByIdAndName(Long id, String name) { 
+        EmployeeVO employee = employeeRepo.findByIdAndName(id, name);
+        EmployeeDTO emp = employeeMapper.employeeToEmployeeDTO(employee);
+        return emp;
+    }
 }
