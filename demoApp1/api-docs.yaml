@@ -10,6 +10,8 @@ paths:
     post:
       tags:
       - employee-controller
+      summary: Create a new employee
+      description: Creates a new employee with the provided details.
       operationId: createEmployee
       requestBody:
         content:
@@ -18,8 +20,21 @@ paths:
               $ref: "#/components/schemas/EmployeeVO"
         required: true
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Employee successfully created
+          content:
+            '*/*':
+              schema:
+                type: object
+        "400":
+          description: "Validation Failed: Name must be from 2 to 50 characters and\
+            \ Age must be between 18 and 65"
+          content:
+            '*/*':
+              schema:
+                type: object
+        "500":
+          description: Unexpected error
           content:
             '*/*':
               schema:
@@ -28,6 +43,8 @@ paths:
     get:
       tags:
       - employee-controller
+      summary: Health check by ID
+      description: Performs a health check by employee ID.
       operationId: healthCheckId
       parameters:
       - name: value
@@ -37,7 +54,13 @@ paths:
           type: string
       responses:
         "200":
-          description: OK
+          description: Success health check
+          content:
+            '*/*':
+              schema:
+                type: string
+        "500":
+          description: Health check failed
           content:
             '*/*':
               schema:
@@ -46,6 +69,8 @@ paths:
     get:
       tags:
       - employee-controller
+      summary: Get employee by name
+      description: Fetches employees by their name.
       operationId: getEmployeeByName
       parameters:
       - name: name
@@ -55,7 +80,19 @@ paths:
           type: string
       responses:
         "200":
-          description: OK
+          description: Successfully retrieved employees
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Employee not found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "500":
+          description: Unexpected error
           content:
             '*/*':
               schema:
@@ -64,6 +101,8 @@ paths:
     get:
       tags:
       - employee-controller
+      summary: Get employee by ID
+      description: Fetches an employee by their ID.
       operationId: getEmployeeById
       parameters:
       - name: id
@@ -74,7 +113,19 @@ paths:
           format: int64
       responses:
         "200":
-          description: OK
+          description: Successfully retrieved employee
+          content:
+            '*/*':
+              schema:
+                type: object
+        "404":
+          description: Employee not found
+          content:
+            '*/*':
+              schema:
+                type: object
+        "500":
+          description: Unexpected error
           content:
             '*/*':
               schema:
@@ -83,10 +134,28 @@ paths:
     get:
       tags:
       - employee-controller
+      summary: Get all employees
+      description: Fetches all employees from the database.
       operationId: getAllEmployees
       responses:
         "200":
-          description: OK
+          description: Successfully retrieved employees
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeVO"
+        "404":
+          description: No employees found
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/EmployeeVO"
+        "500":
+          description: Unexpected error
           content:
             '*/*':
               schema:

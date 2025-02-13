@@ -40,14 +40,14 @@ class EmpPerformanceScala extends Simulation {
   // Set the simulation configuration
   setUp(
     createEmployeeScenario.inject(
-      atOnceUsers(5), // 5 users will concurrently create employees
-      rampUsers(20) during (20 seconds) // Ramp up to 20 users over 20 seconds for creation
+      atOnceUsers(2), // 5 users will concurrently create employees
+      rampUsers(10) during (10 seconds) // Ramp up to 20 users over 20 seconds for creation
     ),
     getAllEmployeesScenario.inject(
-      rampUsers(30) during (30 seconds) // Ramp up to 30 users over 30 seconds for fetching all employees
+      rampUsers(10) during (10 seconds) // Ramp up to 30 users over 30 seconds for fetching all employees
     ),
     getEmployeeByIdScenario.inject(
-      constantUsersPerSec(10) during (5 seconds) // 10 users per second for 1 minute for fetching employee by ID
+      constantUsersPerSec(5) during (5 seconds) // 10 users per second for 1 minute for fetching employee by ID
     )
   ).protocols(httpProtocol)
 }

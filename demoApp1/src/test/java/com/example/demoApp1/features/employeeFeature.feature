@@ -8,8 +8,8 @@ Feature: Employee Management System
     Examples:
       | name        | age |
       | sahithi     | 30  |
-      | shankar     | 20  |
-	  | srilatha   	| 25  |
+      | srilatha     | 40  |
+	  | shankar   	| 50  |
 	
  	Scenario: Retrieving an employee by ID
     Given an employee exists with ID <id> and name "<name>" and age <age>
@@ -19,8 +19,8 @@ Feature: Employee Management System
     Examples:
       | id  | name       | age |
       | 1   | sahithi    | 30  |
-      | 2   | shankar    | 20  |
-      | 3   | srilatha   | 25  |
+      | 2   | srilatha    | 40  |
+      | 3   | shankar   | 50  |
 
 	Scenario: Retrieve all employees
 	Given I have some employees in the system ID <id> and name "<name>" and age <age>
@@ -29,7 +29,7 @@ Feature: Employee Management System
 	Examples:
       | name        | age |
       | sahithi     | 30  |
-      | shankar     | 20  |
-	  | srilatha   	| 25  |
+      | srilatha     | 40  |
+	  | shankar   	| 50  |
 	  
 	  

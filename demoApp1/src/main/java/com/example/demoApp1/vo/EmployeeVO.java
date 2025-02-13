@@ -2,6 +2,7 @@ package com.example.demoApp1.vo;
 
 import java.io.Serializable;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,17 +24,20 @@ public class EmployeeVO implements Serializable {
     private static final long serialVersionUID = 1L;
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Schema(description = "Unique Id of the Employee", example = "1", required = true)
     private Long id;
 
 	@NotBlank(message = "Name is mandatory")
     @Size(min = 2, max = 50, message = "name must be between 2 and 50 characters")
     @Column(nullable = false)
+	@Schema(description = "Name of the Employee", example = "Sahithi", required = true)
     private String name;
 
 	@NotNull(message = "Age is mandatory")
     @Min(value = 18, message = "Age must be at least 18")
     @Max(value = 65, message = "Age must be at most 65")
     @Column(nullable = false)
+	@Schema(description = "Age of the Employee", example = "20", required = true)
     private Integer age;
 
 	public EmployeeVO() {

@@ -22,6 +22,9 @@ import com.example.demoApp1.exceptions.EmployeeValidationException;
 import com.example.demoApp1.service.EmployeeService;
 import com.example.demoApp1.vo.EmployeeVO;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 
 @RestController
@@ -33,6 +36,13 @@ public class EmployeeController {
 	@Autowired
     private EmployeeService employeeService;
 
+	
+	@Operation(summary = "Create a new employee", description = "Creates a new employee with the provided details.",
+	        responses = {
+	            @ApiResponse(responseCode = "201", description = "Employee successfully created"),
+	            @ApiResponse(responseCode = "400", description = "Validation Failed: Name must be from 2 to 50 characters and Age must be between 18 and 65"),
+	            @ApiResponse(responseCode = "500", description = "Unexpected error")
+	        })
 	@PostMapping("/create")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeVO employeeVO){
     	logger.info("Creating a new employee with details: {}", employeeVO);
@@ -47,11 +57,14 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Unexpected error: " + e.getMessage());
         }
     }
-	
-	
-	
 
 
+	@Operation(summary = "Get all employees", description = "Fetches all employees from the database.",
+	        responses = {
+	            @ApiResponse(responseCode = "200", description = "Successfully retrieved employees"),
+	            @ApiResponse(responseCode = "404", description = "No employees found"),
+	            @ApiResponse(responseCode = "500", description = "Unexpected error")
+	        })
 	@GetMapping("/all")
     public ResponseEntity<List<EmployeeVO>> getAllEmployees() {
     	logger.info("Fetching all employees from the database.");
@@ -65,9 +78,16 @@ public class EmployeeController {
         return new ResponseEntity<>(employees, HttpStatus.OK);
     } 
 	
-	
+	@Operation(summary = "Get employee by ID", description = "Fetches an employee by their ID.",
+	        responses = {
+	            @ApiResponse(responseCode = "200", description = "Successfully retrieved employee"),
+	            @ApiResponse(responseCode = "404", description = "Employee not found"),
+	            @ApiResponse(responseCode = "500", description = "Unexpected error")
+	        })
 	@GetMapping("/byId/{id}")
-    public ResponseEntity<?> getEmployeeById(@PathVariable("id") Long id) {
+    public ResponseEntity<?> getEmployeeById(@Parameter(
+            description  = "Unique Identity of the Employee",
+            required = true) @PathVariable("id") Long id) {
     	logger.info("Fetching employee with ID: {}", id);
         try {
             EmployeeVO employee = employeeService.getEmployeeById(id);
@@ -81,8 +101,16 @@ public class EmployeeController {
         }
     }
     
+	@Operation(summary = "Get employee by name", description = "Fetches employees by their name.",
+	        responses = {
+	            @ApiResponse(responseCode = "200", description = "Successfully retrieved employees"),
+	            @ApiResponse(responseCode = "404", description = "Employee not found"),
+	            @ApiResponse(responseCode = "500", description = "Unexpected error")
+	        })
     @GetMapping("/byName/{name}")
-    public ResponseEntity<?> getEmployeeByName(@PathVariable("name") String name) {
+    public ResponseEntity<?> getEmployeeByName(@Parameter(
+            description  = "Name of the Employee",
+            required = true) @PathVariable("name") String name) {
         try {
             List<EmployeeVO> employees = employeeService.getEmployeeByName(name);
             return new ResponseEntity<>(employees, HttpStatus.OK);
@@ -93,6 +121,11 @@ public class EmployeeController {
         }
     }
     
+	@Operation(summary = "Health check by ID", description = "Performs a health check by employee ID.",
+	        responses = {
+	            @ApiResponse(responseCode = "200", description = "Success health check"),
+	            @ApiResponse(responseCode = "500", description = "Health check failed")
+	        })
     @GetMapping("/healthCheck/{value}")
     public ResponseEntity<String> healthCheckId(@PathVariable("value") String value) {
 	    try {
@@ -121,11 +154,5 @@ public class EmployeeController {
                     .body("Health check failed: An unexpected error occurred");
         }
 	}
-    
-    public ResponseEntity<?> fallbackCreateEmployeeController(EmployeeVO employeeVO, Throwable throwable) {
-        // You can log the error and return a custom fallback response
-        logger.error("Circuit breaker triggered: {}", throwable.getMessage());
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                .body("Service is currently unavailable. Please try again later.");
-    }
 }
+

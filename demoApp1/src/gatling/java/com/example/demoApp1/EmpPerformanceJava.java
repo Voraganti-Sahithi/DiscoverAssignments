@@ -45,9 +45,9 @@ public class EmpPerformanceJava extends Simulation {
 	{
         setUp(
             // Run both scenarios with different users
-        		createEmployeeScenario.injectOpen(rampUsers(50).during(30)),
-        		getAllEmployeesScenario.injectOpen(rampUsers(50).during(30)),
-        		getEmployeeByIdScenario.injectOpen((rampUsers(50)).during(30))
+        		createEmployeeScenario.injectOpen(rampUsers(10).during(10)),
+        		getAllEmployeesScenario.injectOpen(rampUsers(10).during(10)),
+        		getEmployeeByIdScenario.injectOpen((rampUsers(10)).during(10))
         ).protocols(httpProtocol);
     }
 }
